@@ -4,6 +4,7 @@ import com.github.vdemeester.miniature.model.Todo;
 import com.google.common.collect.ImmutableMap;
 import com.typesafe.config.Config;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -40,7 +41,11 @@ public class TodoRepositoryImpl implements TodoRepository {
 
     @Override
     public Todo get(Integer id) {
-        return restTemplate.getForObject(urlFor("todo/{id}"), Todo.class, ImmutableMap.of("id", id));
+        try {
+            return restTemplate.getForObject(urlFor("todo/{id}"), Todo.class, ImmutableMap.of("id", id));
+        } catch (HttpClientErrorException e) {
+            return null;
+        }
     }
 
     private String urlFor(String path) {
