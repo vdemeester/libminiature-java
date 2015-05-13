@@ -1,0 +1,5 @@
+language: Java
+
+jdk:
+  - openjdk8
+  - oracljdk8
