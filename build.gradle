@@ -11,7 +11,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 group = 'com.github.vdemeester'
-version = '0.2.0'
+version = '0.3.0-SNAPSHOT'
 
 dependencies {
     // Compile
@@ -53,6 +53,15 @@ publishing {
 
             artifact sourcesJar
             artifact javadocJar
+        }
+    }
+    publishing.publications.all {
+        pom.withXml {
+            asNode().dependencies.'*'.findAll() {
+                it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                    dep.name == it.artifactId.text()
+                }
+            }.each { it.scope*.value = 'compile'}
         }
     }
 }
