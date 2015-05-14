@@ -3,16 +3,21 @@ package com.github.vdemeester.miniature;
 import com.github.vdemeester.miniature.model.Todo;
 import com.google.common.collect.ImmutableMap;
 import com.typesafe.config.Config;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TodoRepositoryImpl implements TodoRepository {
+
+    public static final ParameterizedTypeReference<List<Todo>> TODO_PARAMETERIZED_TYPE_REFERENCE = new ParameterizedTypeReference<List<Todo>>() {
+    };
 
     private final RestTemplate restTemplate;
     private final Config config;
@@ -28,21 +33,22 @@ public class TodoRepositoryImpl implements TodoRepository {
 
     @Override
     public List<Todo> findAll() {
-        return restTemplate.getForObject(urlFor("todo/"), List.class);
+        ResponseEntity<List<Todo>> response = restTemplate.exchange(urlFor("todos/"), HttpMethod.GET, null, TODO_PARAMETERIZED_TYPE_REFERENCE);
+        return response.getBody();
     }
 
     @Override
     public List<Todo> findAll(boolean includeCompleted) {
-        List<Todo> todos = restTemplate.getForObject(urlFor("todo/"), List.class);
+        List<Todo> todos = findAll();
         return todos.stream()
-                .filter(Todo::isCompleted)
+                .filter(todo -> includeCompleted || !todo.isCompleted())
                 .collect(Collectors.toList());
     }
 
     @Override
     public Todo get(Integer id) {
         try {
-            return restTemplate.getForObject(urlFor("todo/{id}"), Todo.class, ImmutableMap.of("id", id));
+            return restTemplate.getForObject(urlFor("todos/{id}"), Todo.class, ImmutableMap.of("id", id));
         } catch (HttpClientErrorException e) {
             return null;
         }
