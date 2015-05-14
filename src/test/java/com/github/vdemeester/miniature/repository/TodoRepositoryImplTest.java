@@ -1,11 +1,10 @@
-package com.github.vdemeester.miniature;
+package com.github.vdemeester.miniature.repository;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.vdemeester.miniature.model.Todo;
+import com.github.vdemeester.miniature.repository.TodoRepository;
+import com.github.vdemeester.miniature.repository.TodoRepositoryImpl;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.assertj.core.api.iterable.Extractor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,18 +12,14 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.filter;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;

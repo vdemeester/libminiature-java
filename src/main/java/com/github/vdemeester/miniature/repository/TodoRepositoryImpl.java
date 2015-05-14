@@ -1,19 +1,20 @@
-package com.github.vdemeester.miniature;
+package com.github.vdemeester.miniature.repository;
 
 import com.github.vdemeester.miniature.model.Todo;
 import com.google.common.collect.ImmutableMap;
 import com.typesafe.config.Config;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Repository
 public class TodoRepositoryImpl implements TodoRepository {
 
     public static final ParameterizedTypeReference<List<Todo>> TODO_PARAMETERIZED_TYPE_REFERENCE = new ParameterizedTypeReference<List<Todo>>() {
@@ -24,6 +25,7 @@ public class TodoRepositoryImpl implements TodoRepository {
 
     private final String baseURI;
 
+    @Autowired
     public TodoRepositoryImpl(RestTemplate restTemplate, Config config) {
         this.restTemplate = restTemplate;
         this.config = config;
